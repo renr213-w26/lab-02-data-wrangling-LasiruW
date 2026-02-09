@@ -5,9 +5,7 @@ date: "June 24, 1497"
 format: 
   html: default # for speed
   pdf: default # for final output
-
 ---
-
 
 ```{r}
 #| eval: true
@@ -16,21 +14,30 @@ format:
 library(tidyverse)
 ```
 
-
 # Questions
 
 ## Part 1
 
 ### Question 1
 
+```{r}
+#| label: Question 1
 
-\newpage
+midwest |>
+  select(state,county) |>
+  count(state) |>
+  arrange(desc(n))
+
+```
+
+Home to 102 counties, Illinois has the most counties. While Wisconsin has the least with only 72 counties.
 
 ### Question 2
 
 \newpage
 
 ### Question 3
+
 \newpage
 
 ### Question 5
@@ -51,6 +58,4 @@ library(tidyverse)
 
 ## Part 2
 
-
 ### Question 9
-

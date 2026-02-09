@@ -34,7 +34,16 @@ Home to 102 counties, Illinois has the most counties. While Wisconsin has the le
 
 ### Question 2
 
-\newpage
+```{r}
+
+midwest |>
+  select(state, county) |>
+  count(county) |>
+  arrange(desc(n)) |>
+  filter(n == 5)
+```
+
+Counties with the names "Crawford", "Jackson", and "Monroe" exist in all five Midwestern states.
 
 ### Question 3
 

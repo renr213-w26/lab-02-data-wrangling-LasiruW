@@ -47,7 +47,17 @@ Counties with the names "Crawford", "Jackson", and "Monroe" exist in all five Mi
 
 ### Question 3
 
-\newpage
+```{r}
+
+midwest |>
+  select(county, state, popdensity, poptotal, area) |>
+  filter(popdensity > 25000) |>
+  arrange(desc(popdensity))
+```
+
+The county with the largest population is Cook county, Illinois, home to `r max(midwest$poptotal)` residents.
+
+### 
 
 ### Question 5
 

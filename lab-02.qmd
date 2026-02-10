@@ -57,11 +57,14 @@ midwest |>
 
 The county with the largest population is Cook county, Illinois, home to `r max(midwest$poptotal)` residents.
 
-### 
+###  Question 5
 
-### Question 5
+```{r}
 
-\newpage
+midwest |>
+  mutate(metro = ifelse(inmetro == 1, "Yes", "No")) |>
+  count(state,metro == "Yes")
+```
 
 ### Question 6
 

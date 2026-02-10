@@ -57,7 +57,7 @@ midwest |>
 
 The county with the largest population is Cook county, Illinois, home to `r max(midwest$poptotal)` residents.
 
-###  Question 5
+### Question 5
 
 ```{r}
 
@@ -68,7 +68,44 @@ midwest |>
 
 ### Question 6
 
-\newpage
+```{r}
+#A
+midwest |> 
+  select(county, state, percbelowpoverty, percollege) |>
+  filter(percbelowpoverty > 40 & percollege < 10)
+
+#B 
+midwest |> 
+  select(county, state, percbelowpoverty, percollege) |>
+  filter(percbelowpoverty < 20 & percollege > 40)
+
+#C
+midwest |> 
+  select(county, state, percbelowpoverty, percollege) |>
+  filter(percbelowpoverty > 40 & percollege < 10 |
+         percbelowpoverty < 20 & percollege > 40)
+
+#D & E
+
+midwest |> 
+  mutate(potential_outlier = ifelse(percbelowpoverty > 40 & percollege < 10 |
+         percbelowpoverty < 20 & percollege > 40,
+    "Yes", "No")
+    ) |>
+  select(county, state, percbelowpoverty, percollege, potential_outlier) |>
+  ggplot( 
+       aes(x = percollege, y = percbelowpoverty, 
+           color = potential_outlier, shape = state)) + 
+       geom_point() +
+       labs(
+         title = "Impacts of College Education on County Poverty, Extreme Cases",
+         x = "College Educated(% Pop.)",
+         y = "Below Poverty Line(% Pop.)",
+         color = "Outlier?", 
+         shape = "State"
+       )
+
+```
 
 ### Question 7
 

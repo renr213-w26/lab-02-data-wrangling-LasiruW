@@ -133,11 +133,20 @@ midwest |>
 
 Illinois had the largest population of 11,430,602 residents, 27% of all Midwesterners. Wisconsin had the smallest populace, at 4,891,769 residents, just 11% of all Midwesterners.
 
-### 
-
 ### Question 8
 
-\newpage
+```{r}
+
+state_poverty <- midwest |>
+  group_by(state) |>
+  summarize(mean_percbelowpoverty = mean(percbelowpoverty,na.rm = TRUE))
+
+state_poverty |>
+  arrange(mean_percbelowpoverty)
+
+```
+
+Indiana has the lowest average percentage living below the poverty line while Michigan has the highest average percentage living below the poverty line.
 
 ## Part 2
 

@@ -151,3 +151,67 @@ Indiana has the lowest average percentage living below the poverty line while Mi
 ## Part 2
 
 ### Question 9
+
+```{r}
+df <- tibble(
+  var_1 = c(10, 20, 30, 40, 50),
+  var_2 = c("Pizza", "Burger", "Pizza", "Pizza", "Burger"),
+  var_3 = c("Apple", "Apple", "Pear", "Pear", "Banana")
+)
+
+df
+```
+
+A.
+
+```{r}
+df |>
+  arrange(var_2)
+```
+
+This code arranges the tibble in ascending order according to "var_2"
+
+B.
+
+```{r}
+df |>
+  group_by(var_2)
+```
+
+"group_by()" function groups the tibble according to the assigned variable, "var_2" in this case. This is different from "arrange()" as there is no clear organization of "Pizza" or "Burger".
+
+C.
+
+```{r}
+df |>
+  group_by(var_2) |>
+  summarize(mean_var_1 = mean(var_1))
+```
+
+The "group_by()" function groups values according to its assigned var_2 category of "Burger" or "Pizza". The "summarize()" finds the average var_1 value per var_2 category and places it in a new column named after its assigned name "mean_var_1".
+
+D.
+
+```{r}
+df |>
+  group_by(var_2,var_3) |>
+  summarize(mean_var_1 = mean(var_1))
+```
+
+In this case, grouping is done for 2 groups, "var_2" and "var_3". When the main "mean()" operation is finished in "summarize()" the function is unable to retain the prior grouping, thus defaulting to the first grouped variable "var_2", this overriding is what separates E from D.
+
+F.
+
+```{r}
+df |>
+  group_by(var_2, var_3) |>
+  summarize(mean_var_1 = mean(var_1), .groups = "drop")
+
+df |>
+  group_by(var_2, var_3) |>
+  mutate(mean_var_1 = mean(var_1))
+```
+
+In the first pipeline: "group_by()" groups the df tibble according to "var_2" and "var_3". In the "summarize()" function, the average var_1 value is calculated for the two groupings, the ".groups" function tells the compiler to disregard prior grouping and output the result.
+
+In the second pipeline: columns are grouped according to "var_2" and "var_3". The "mutate()" function creates a new column displaying the average values of "var_1".

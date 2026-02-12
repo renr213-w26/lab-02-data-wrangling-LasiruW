@@ -5,9 +5,7 @@ date: "June 24, 1497"
 format: 
   html: default # for speed
   pdf: default # for final output
-
 ---
-
 
 ```{r}
 #| eval: true
@@ -16,41 +14,204 @@ format:
 library(tidyverse)
 ```
 
-
 # Questions
 
 ## Part 1
 
 ### Question 1
 
+```{r}
+#| label: Question 1
 
-\newpage
+midwest |>
+  select(state,county) |>
+  count(state) |>
+  arrange(desc(n))
+
+```
+
+Home to 102 counties, Illinois has the most counties. While Wisconsin has the least with only 72 counties.
 
 ### Question 2
 
-\newpage
+```{r}
+
+midwest |>
+  select(state, county) |>
+  count(county) |>
+  arrange(desc(n)) |>
+  filter(n == 5)
+```
+
+Counties with the names "Crawford", "Jackson", and "Monroe" exist in all five Midwestern states.
 
 ### Question 3
-\newpage
+
+```{r}
+
+midwest |>
+  select(county, state, popdensity, poptotal, area) |>
+  filter(popdensity > 25000) |>
+  arrange(desc(popdensity))
+```
+
+The county with the largest population is Cook county, Illinois, home to `r max(midwest$poptotal)` residents.
 
 ### Question 5
 
-\newpage
+```{r}
+
+midwest |>
+  mutate(metro = ifelse(inmetro == 1, "Yes", "No")) |>
+  count(state,metro == "Yes")
+```
 
 ### Question 6
 
-\newpage
+```{r}
+#A
+midwest |> 
+  select(county, state, percbelowpoverty, percollege) |>
+  filter(percbelowpoverty > 40 & percollege < 10)
+
+#B 
+midwest |> 
+  select(county, state, percbelowpoverty, percollege) |>
+  filter(percbelowpoverty < 20 & percollege > 40)
+
+#C
+midwest |> 
+  select(county, state, percbelowpoverty, percollege) |>
+  filter(percbelowpoverty > 40 & percollege < 10 |
+         percbelowpoverty < 20 & percollege > 40)
+
+#D & E
+
+midwest |> 
+  mutate(potential_outlier = ifelse(percbelowpoverty > 40 & percollege < 10 |
+         percbelowpoverty < 20 & percollege > 40,
+    "Yes", "No")
+    ) |>
+  select(county, state, percbelowpoverty, percollege, potential_outlier) |>
+  ggplot( 
+       aes(x = percollege, y = percbelowpoverty, 
+           color = potential_outlier, shape = state)) + 
+       geom_point() +
+       labs(
+         title = "Impacts of College Education on County Poverty, Extreme Cases",
+         x = "College Educated(% Pop.)",
+         y = "Below Poverty Line(% Pop.)",
+         color = "Outlier?", 
+         shape = "State"
+       )
+
+```
 
 ### Question 7
 
-\newpage
+```{r}
+#A
+
+Total_population <- midwest |> 
+  group_by(state) |>
+  summarize(state_pop_total = sum(poptotal)) |>
+  arrange(desc(state_pop_total))
+
+#B
+
+midwest |> 
+  group_by(state) |> 
+  summarize(state_pop_total = sum(poptotal)) |>
+  mutate(state_pop_prop = state_pop_total/ sum(state_pop_total)) |>
+  arrange(desc(state_pop_prop))
+
+
+
+
+
+```
+
+Illinois had the largest population of 11,430,602 residents, 27% of all Midwesterners. Wisconsin had the smallest populace, at 4,891,769 residents, just 11% of all Midwesterners.
 
 ### Question 8
 
-\newpage
+```{r}
+
+state_poverty <- midwest |>
+  group_by(state) |>
+  summarize(mean_percbelowpoverty = mean(percbelowpoverty,na.rm = TRUE))
+
+state_poverty |>
+  arrange(mean_percbelowpoverty)
+
+```
+
+Indiana has the lowest average percentage living below the poverty line while Michigan has the highest average percentage living below the poverty line.
 
 ## Part 2
 
-
 ### Question 9
 
+```{r}
+df <- tibble(
+  var_1 = c(10, 20, 30, 40, 50),
+  var_2 = c("Pizza", "Burger", "Pizza", "Pizza", "Burger"),
+  var_3 = c("Apple", "Apple", "Pear", "Pear", "Banana")
+)
+
+df
+```
+
+A.
+
+```{r}
+df |>
+  arrange(var_2)
+```
+
+This code arranges the tibble in ascending order according to "var_2"
+
+B.
+
+```{r}
+df |>
+  group_by(var_2)
+```
+
+"group_by()" function groups the tibble according to the assigned variable, "var_2" in this case. This is different from "arrange()" as there is no clear organization of "Pizza" or "Burger".
+
+C.
+
+```{r}
+df |>
+  group_by(var_2) |>
+  summarize(mean_var_1 = mean(var_1))
+```
+
+The "group_by()" function groups values according to its assigned var_2 category of "Burger" or "Pizza". The "summarize()" finds the average var_1 value per var_2 category and places it in a new column named after its assigned name "mean_var_1".
+
+D.
+
+```{r}
+df |>
+  group_by(var_2,var_3) |>
+  summarize(mean_var_1 = mean(var_1))
+```
+
+In this case, grouping is done for 2 groups, "var_2" and "var_3". When the main "mean()" operation is finished in "summarize()" the function is unable to retain the prior grouping, thus defaulting to the first grouped variable "var_2", this overriding is what separates E from D.
+
+F.
+
+```{r}
+df |>
+  group_by(var_2, var_3) |>
+  summarize(mean_var_1 = mean(var_1), .groups = "drop")
+
+df |>
+  group_by(var_2, var_3) |>
+  mutate(mean_var_1 = mean(var_1))
+```
+
+In the first pipeline: "group_by()" groups the df tibble according to "var_2" and "var_3". In the "summarize()" function, the average var_1 value is calculated for the two groupings, the ".groups" function tells the compiler to disregard prior grouping and output the result.
+
+In the second pipeline: columns are grouped according to "var_2" and "var_3". The "mutate()" function creates a new column displaying the average values of "var_1".
